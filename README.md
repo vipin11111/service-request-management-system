@@ -2,7 +2,19 @@
 
 A production-ready full-stack **Service Request Management System** built with **React 18, TypeScript, Express.js, MongoDB Atlas, and JWT Authentication**.
 
-This enterprise-grade application enables users to register, authenticate, create, and track IT support tickets with AI-assisted categorisation and priority assessment, while granting administrators complete oversight to manage, assign, and update service ticket lifecycles.
+[![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen.svg)](https://github.com/vipin11111/service-request-management-system)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue.svg)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-18-cyan.svg)](https://reactjs.org/)
+[![Express](https://img.shields.io/badge/Express-4.19-lightgrey.svg)](https://expressjs.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green.svg)](https://www.mongodb.com/atlas)
+
+---
+
+## 🌐 Live URLs & Links
+
+- **GitHub Repository**: [https://github.com/vipin11111/service-request-management-system](https://github.com/vipin11111/service-request-management-system)
+- **Frontend App (Vercel)**: `https://service-request-management-system.vercel.app` (Or connected Vercel project domain)
+- **Backend API (Render)**: `https://service-request-management-backend.onrender.com/api`
 
 ---
 
@@ -64,7 +76,6 @@ Administrators receive a dedicated control panel to view all tickets, assign age
 - **Language**: TypeScript
 - **Database**: MongoDB Atlas (via Mongoose ORM)
 - **Security**: JWT (`jsonwebtoken`), `bcryptjs`, CORS middleware
-- **Development Tooling**: `ts-node-dev`
 
 ---
 
@@ -84,6 +95,7 @@ service-request-management-system
 │   │   └── main.tsx               # Main React entrypoint & router
 │   ├── package.json
 │   ├── tsconfig.json
+│   ├── vercel.json                # Vercel SPA routing configuration
 │   └── vite.config.ts             # Vite server proxy config
 │
 ├── server                         # Backend Express + TypeScript Server
@@ -98,31 +110,52 @@ service-request-management-system
 │   ├── package.json
 │   └── tsconfig.json
 │
+├── render.yaml                    # Render Cloud Backend Deployment Config
 ├── .gitignore                     # Git ignore definitions
 └── README.md                      # Complete system documentation
 ```
 
 ---
 
-# ⚙️ Installation & Environment Setup
+# 🌐 Production Cloud Deployment Guide
 
-## 1. Clone Repository
-
-```bash
-git clone git@github.com:vipin11111/service-request-management-system.git
-cd service-request-management-system
-```
+### 1. Deploy Backend on Render
+1. Go to [Render Dashboard](https://dashboard.render.com/) -> **New Web Service**.
+2. Connect your GitHub repository `vipin11111/service-request-management-system`.
+3. Set **Root Directory**: `server`
+4. Set **Build Command**: `npm install && npm run build`
+5. Set **Start Command**: `npm start`
+6. Add Environment Variables:
+   - `PORT`: `5000`
+   - `MONGODB_URI`: `mongodb+srv://<user>:<password>@cluster0.zodxsio.mongodb.net/service-request-db?retryWrites=true&w=majority`
+   - `JWT_SECRET`: `your_secure_jwt_secret_key`
+   - `JWT_EXPIRES_IN`: `1d`
+   - `CLIENT_ORIGIN`: `https://service-request-management-system.vercel.app`
+7. Click **Create Web Service**. Render will build and deploy the backend API.
 
 ---
 
-## 2. Backend Setup
+### 2. Deploy Frontend on Vercel
+1. Go to [Vercel Dashboard](https://vercel.com/new) -> **Import Project**.
+2. Select repository `vipin11111/service-request-management-system`.
+3. Set **Root Directory**: `client`
+4. Set **Framework Preset**: `Vite`
+5. Add Environment Variable:
+   - `VITE_API_URL`: `https://service-request-management-backend.onrender.com/api`
+6. Click **Deploy**. Vercel will build and serve the single-page application.
+
+---
+
+# ⚙️ Local Development Setup
+
+## 1. Backend
 
 ```bash
 cd server
 npm install
 ```
 
-Create `.env` inside `server/` (see `server/.env.example`):
+Create `.env` inside `server/`:
 
 ```env
 PORT=5000
@@ -135,75 +168,32 @@ AI_SERVICE_TOKEN=mock_secret
 DB_SEED_MODE=active
 ```
 
-Seed Database (Optional):
-```bash
-npm run seed
-```
-
-Start Development Server:
+Start Server:
 ```bash
 npm run dev
 ```
 
 ---
 
-## 3. Frontend Setup
+## 2. Frontend
 
 ```bash
-cd ../client
+cd client
 npm install
 ```
 
-Create `.env` inside `client/` (see `client/.env.example`):
+Create `.env` inside `client/`:
 
 ```env
 VITE_API_URL=http://localhost:5000/api
 ```
 
-Start Frontend App:
+Start App:
 ```bash
 npm run dev
 ```
 
-Open application at: **`http://localhost:3000`**
-
----
-
-# 📐 Project Architecture Diagram
-
-```
-+-----------------------------------------------------------------------+
-|                           BROWSER / CLIENT                            |
-|  +---------------------+   +---------------------+  +--------------+  |
-|  |   React Components  |   |   AuthContext       |  | Axios Client |  |
-|  +----------+----------+   +----------+----------+  +-------+------+  |
-+-------------|-------------------------|---------------------|---------+
-              |                         |                     |
-              | Interceptor / Bearer    | JWT Session         | Proxy (/api)
-              v                         v                     v
-+-----------------------------------------------------------------------+
-|                          EXPRESS BACKEND                              |
-|  +-----------------------------------------------------------------+  |
-|  | CORS Middleware (Origin: http://localhost:3000, Methods: ALL)   |  |
-|  +--------------------------------+--------------------------------+  |
-|                                   |                                   |
-|  +--------------------------------v--------------------------------+  |
-|  |                      Router / Controllers                       |  |
-|  |  /api/auth  |  /api/requests  |  /api/ai  |  /api/auth/me       |  |
-|  +--------------------------------+--------------------------------+  |
-|                                   |                                   |
-|  +--------------------------------v--------------------------------+  |
-|  | JWT Middleware (Bearer Token Verification & req.user Injection) |  |
-|  +--------------------------------+--------------------------------+  |
-+-----------------------------------|-----------------------------------+
-                                    | Mongoose ODM
-                                    v
-+-----------------------------------------------------------------------+
-|                            DATABASE                                   |
-|                      MongoDB Atlas Cluster                            |
-|             (Collections: users, servicerequests)                     |
-+-----------------------------------------------------------------------+
-```
+Open: **`http://localhost:3000`**
 
 ---
 
@@ -224,41 +214,6 @@ Open application at: **`http://localhost:3000`**
 | **Frontend** | Navbar mobile menu toggle failure | Corrected React state toggle logic in Navbar component |
 | **Frontend** | UI loading state issues | Added spinner states to prevent double submissions during async calls |
 | **Error Handling** | Silent failures in server controllers | Wrapped all controllers in `try/catch` and logged with `console.error(err)` |
-
----
-
-# 🔒 Security Improvements
-
-- **Stateless JWT Authentication**: Secure signing and verification.
-- **Salted Password Hashing**: `bcryptjs` hashing prevents rainbow table attacks.
-- **Role-Based Access Control (RBAC)**: Middleware enforcement for Admin routes (`isAdmin`).
-- **Object-Level Authorization (BOLA Prevention)**: Users can only view and modify their own tickets.
-- **Environment Isolation**: No hardcoded secrets or database URIs in source code.
-- **Protected Cross-Origin Resource Sharing**: Strict origin verification and header rules.
-
----
-
-# 🧪 Testing & Verification Checklist
-
-- [x] Register new user account.
-- [x] Login with valid credentials and verify JWT return.
-- [x] Refresh browser (`F5`) and confirm session retention via `/api/auth/me`.
-- [x] Create a service request with AI suggestion auto-fill.
-- [x] View ticket details and status history timeline.
-- [x] Cancel user ticket and verify status update.
-- [x] Login as Admin and view all organizational tickets.
-- [x] Logout and verify token destruction in `localStorage`.
-
----
-
-# 🚀 Future Improvements
-
-- [ ] **Real AI Engine**: Integrate OpenAI GPT API or Google Gemini API.
-- [ ] **Email & Push Notifications**: Send email updates on ticket status changes.
-- [ ] **File Attachments**: Support screenshot uploads to AWS S3 / Cloudinary.
-- [ ] **Analytics Dashboard**: Graphical reports on ticket resolution times.
-- [ ] **Dockerization**: Containerize frontend, backend, and MongoDB with `docker-compose`.
-- [ ] **CI/CD Pipeline**: Automated GitHub Actions workflow for linting and testing.
 
 ---
 
