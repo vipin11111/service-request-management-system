@@ -1,78 +1,70 @@
 # 🚀 Service Request Management System
 
-A full-stack Service Request Management System built using **React, TypeScript, Express.js, MongoDB Atlas, and JWT Authentication**.
+A production-ready full-stack **Service Request Management System** built with **React 18, TypeScript, Express.js, MongoDB Atlas, and JWT Authentication**.
 
-This project allows users to register, log in, create and manage service requests, receive AI-assisted request analysis, and enables administrators to manage requests securely.
+This enterprise-grade application enables users to register, authenticate, create, and track IT support tickets with AI-assisted categorisation and priority assessment, while granting administrators complete oversight to manage, assign, and update service ticket lifecycles.
 
 ---
 
 # 📖 Project Overview
 
-The application streamlines service request management by allowing authenticated users to submit IT support requests while administrators can review, assign, and update request statuses.
+The **Service Request Management System (SRMS)** streamlines internal IT operations. Employees can submit service tickets for software issues, hardware failures, network access, or administrative support. An intelligent AI-assisted analyzer automatically scans request titles and descriptions to suggest:
 
-The system also includes an AI-assisted request analysis feature that automatically suggests:
+- **Automated Issue Summary**: Summarises key issues cleanly.
+- **Suggested Category**: `SOFTWARE`, `HARDWARE`, `NETWORK`, `ACCESS`, or `OTHER`.
+- **Suggested Priority**: `LOW`, `MEDIUM`, `HIGH`, or `URGENT`.
+- **Justification / Reason**: Explains why the suggested priority was chosen.
 
-- Request Summary
-- Category
-- Priority
-- Reason
+Administrators receive a dedicated control panel to view all tickets, assign agents, transition statuses (`OPEN` -> `IN_PROGRESS` -> `RESOLVED` / `CANCELLED`), and monitor team velocity.
 
 ---
 
 # ✨ Features
 
-## Authentication
+## 🔐 Authentication & Session Security
+- **User Registration & Login**: Secure credential-based access.
+- **JWT Token Authentication**: Stateless token generation with expiration.
+- **Password Security**: Salted password hashing with `bcryptjs`.
+- **Session Persistence**: Automatic session restoration via `/api/auth/me` on browser refresh.
+- **Protected Routes**: Client-side and server-side route protection based on authentication status and user roles (`USER` vs `ADMIN`).
 
-- User Registration
-- User Login
-- JWT Authentication
-- Password Hashing using bcrypt
-- Session Persistence (`/api/auth/me`)
-- Protected Routes
+## 🎫 Service Request Management
+- **Ticket Creation**: Multi-field submission with optional AI recommendations.
+- **Dashboard Overview**: Metrics tracking total, open, in-progress, and resolved tickets.
+- **Ticket Lifecycle**: Ability for users to review request details or cancel pending tickets.
+- **Status Audit Trail**: Real-time history tracking who changed status and when.
 
-## Service Requests
+## 🛡️ Admin Features
+- **Global Ticket Oversight**: Administrative view of all user tickets across the organization.
+- **Agent Assignment**: Assign tickets to support staff.
+- **Status Progression**: Transition tickets through resolution lifecycle.
+- **User Management**: View and audit registered system users.
 
-- Create Request
-- View Requests
-- View Request Details
-- Cancel Request
-- Status History Tracking
-
-## Admin Features
-
-- View All Requests
-- Assign Requests
-- Update Request Status
-- Role-based Authorization (`ADMIN` role guard)
-
-## AI Assistance
-
-- AI Request Analysis
-- Category Prediction
-- Priority Suggestion
-- Request Summary
+## 🤖 AI Assistance Integration
+- **Automated Text Analysis**: Analyzes text patterns to infer ticket attributes.
+- **Category & Priority Engine**: Intelligent categorization based on severity keywords.
+- **Smart Pre-filling**: Auto-populates request form fields to decrease resolution times.
 
 ---
 
 # 🛠 Tech Stack
 
 ## Frontend
-
-- React
-- TypeScript
-- Vite
-- Axios
-- React Router
-- Tailwind CSS
+- **Framework**: React 18
+- **Language**: TypeScript
+- **Build Tool**: Vite
+- **HTTP Client**: Axios (with Bearer token interceptors & credentials support)
+- **Routing**: React Router v6
+- **Styling**: Tailwind CSS
+- **Icons**: Lucide React
 
 ## Backend
-
-- Node.js
-- Express.js
-- TypeScript
-- MongoDB Atlas
-- JWT Authentication
-- bcrypt
+- **Runtime**: Node.js
+- **Framework**: Express.js
+- **Language**: TypeScript
+- **Database**: MongoDB Atlas (via Mongoose ORM)
+- **Security**: JWT (`jsonwebtoken`), `bcryptjs`, CORS middleware
+- **Development Tooling**: `ts-node-dev`
 
 ---
 
@@ -81,236 +73,201 @@ The system also includes an AI-assisted request analysis feature that automatica
 ```
 service-request-management-system
 │
-├── client
+├── client                         # Frontend React + Vite Application
 │   ├── src
-│   ├── pages
-│   ├── components
-│   ├── context
-│   ├── api
-│   └── assets
+│   │   ├── api                    # Axios configuration & interceptors
+│   │   ├── components             # Reusable UI components (Navbar, etc.)
+│   │   ├── context                # AuthContext for session management
+│   │   ├── pages                  # Dashboard, Login, Register, Request Details
+│   │   ├── types                  # Shared TypeScript interfaces
+│   │   ├── index.css              # Tailwind CSS styles
+│   │   └── main.tsx               # Main React entrypoint & router
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── vite.config.ts             # Vite server proxy config
 │
-├── server
-│   ├── controllers
-│   ├── middleware
-│   ├── models
-│   ├── routes
-│   ├── config
-│   └── src
+├── server                         # Backend Express + TypeScript Server
+│   ├── src
+│   │   ├── config                 # Database connection config
+│   │   ├── controllers            # Auth, Request & AI controllers
+│   │   ├── middleware             # JWT Auth & Role Authorization
+│   │   ├── models                 # Mongoose schemas (User, ServiceRequest)
+│   │   ├── routes                 # Auth, Requests, AI API routes
+│   │   ├── scripts                # Database seeding script
+│   │   └── index.ts               # Express application entrypoint
+│   ├── package.json
+│   └── tsconfig.json
 │
-└── README.md
+├── .gitignore                     # Git ignore definitions
+└── README.md                      # Complete system documentation
 ```
 
 ---
 
-# 🏗️ Architecture Diagram
+# ⚙️ Installation & Environment Setup
 
-```
-+-----------------------------------------------------------------------+
-|                             CLIENT (React + Vite)                     |
-|                                                                       |
-|   +-------------------+    +-------------------+  +---------------+   |
-|   |  AuthContext      |    | Axios Interceptor |  | React Router  |   |
-|   | (Session & State) |--> |  (Bearer Token)   |->| (Protected    |   |
-|   +-------------------+    +-------------------+  |   Routes)     |   |
-|                                        |          +---------------+   |
-+----------------------------------------|------------------------------+
-                                         | HTTP / REST API (via Vite Proxy)
-                                         v
-+-----------------------------------------------------------------------+
-|                          BACKEND (Express + TS)                       |
-|                                                                       |
-|   +-------------------+    +-------------------+  +---------------+   |
-|   | CORS & BodyParser |--> | Auth Middleware   |->| Controllers   |   |
-|   | Middleware        |    | (JWT Verification)|  | & Routes      |   |
-|   +-------------------+    +-------------------+  +---------------+   |
-|                                                           |           |
-+-----------------------------------------------------------|-----------+
-                                                            |
-                                        +-------------------+-------------------+
-                                        |                                       |
-                                        v                                       v
-                             +--------------------+                   +-------------------+
-                             |  MongoDB Atlas DB  |                   | AI Engine (Mock)  |
-                             |  (Mongoose Schema) |                   | (Rule Analysis)   |
-                             +--------------------+                   +-------------------+
-```
-
----
-
-# 🔧 Bug Fixes Implemented
-
-| Issue | Solution |
-|-------|----------|
-| Passwords stored insecurely | Implemented bcrypt password hashing |
-| User role selection during registration | Restricted registration to USER role |
-| JWT token mismatch | Unified frontend/backend token handling |
-| Session lost after page refresh | Implemented `/api/auth/me` & fixed localStorage token persistence |
-| Authentication state inconsistency | Corrected AuthContext token management |
-| Ownership vulnerability (IDOR/BOLA) | Added ownership validation for requests |
-| AI endpoint mismatch | Fixed API route alignment |
-| AI response field mismatch | Updated frontend response mapping |
-| Invalid AI priority value | Replaced invalid enum with valid priority |
-| CORS configuration issues | Fixed origins, methods, headers, and error middleware ordering |
-| Missing request status history | Added status history tracking |
-| Loading state issues | Improved UI loading state handling |
-| Navbar mobile menu issue | Fixed menu toggle behavior |
-| Improved error handling | Added proper try/catch, logging, and error responses |
-
----
-
-# 🔒 Security Improvements
-
-- JWT Authentication
-- Password Hashing using bcrypt
-- Role-based Access Control (RBAC)
-- Ownership Validation (IDOR/BOLA mitigation)
-- Protected API Routes
-- Secure Authentication Flow
-- Improved CORS Configuration (Restricted Origin & Headers)
-
----
-
-# ⚙️ Installation
-
-## Clone Repository
+## 1. Clone Repository
 
 ```bash
 git clone git@github.com:vipin11111/service-request-management-system.git
-```
-
-or
-
-```bash
-git clone https://github.com/vipin11111/service-request-management-system.git
+cd service-request-management-system
 ```
 
 ---
 
-## Backend Setup
+## 2. Backend Setup
 
 ```bash
 cd server
 npm install
 ```
 
-Create `.env` file (refer to `.env.example`):
+Create `.env` inside `server/` (see `server/.env.example`):
 
 ```env
 PORT=5000
-MONGODB_URI=YOUR_MONGODB_ATLAS_URI
-JWT_SECRET=your_secret_key
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/service-request-db?retryWrites=true&w=majority
+JWT_SECRET=your_jwt_secret_key_here
 JWT_EXPIRES_IN=1d
 CLIENT_ORIGIN=http://localhost:3000
+AI_PROVIDER=mock
+AI_SERVICE_TOKEN=mock_secret
+DB_SEED_MODE=active
 ```
 
-Start Backend:
+Seed Database (Optional):
+```bash
+npm run seed
+```
 
+Start Development Server:
 ```bash
 npm run dev
 ```
 
 ---
 
-## Frontend Setup
+## 3. Frontend Setup
 
 ```bash
-cd client
+cd ../client
 npm install
 ```
 
-Create `.env` file (refer to `.env.example`):
+Create `.env` inside `client/` (see `client/.env.example`):
 
 ```env
 VITE_API_URL=http://localhost:5000/api
 ```
 
-Start Frontend:
-
+Start Frontend App:
 ```bash
 npm run dev
 ```
 
----
-
-Open application in browser:
-
-```
-http://localhost:3000
-```
+Open application at: **`http://localhost:3000`**
 
 ---
 
-# 🧪 Testing
-
-- Register User
-- Login
-- Refresh Browser (verify session persistence)
-- Create Request
-- AI Request Analysis
-- View Request & Status History
-- Update Request Status (Admin)
-- Logout
-
----
-
-# 📊 Application Flow
+# 📐 Project Architecture Diagram
 
 ```
-User
-   │
-   ▼
-React Frontend
-   │
-Axios Interceptor (Bearer Token)
-   │
-Express API (CORS & Auth Middleware)
-   │
-JWT Authentication / RBAC
-   │
-MongoDB Atlas
-   │
-Response & UI Render
-   │
-Dashboard
++-----------------------------------------------------------------------+
+|                           BROWSER / CLIENT                            |
+|  +---------------------+   +---------------------+  +--------------+  |
+|  |   React Components  |   |   AuthContext       |  | Axios Client |  |
+|  +----------+----------+   +----------+----------+  +-------+------+  |
++-------------|-------------------------|---------------------|---------+
+              |                         |                     |
+              | Interceptor / Bearer    | JWT Session         | Proxy (/api)
+              v                         v                     v
++-----------------------------------------------------------------------+
+|                          EXPRESS BACKEND                              |
+|  +-----------------------------------------------------------------+  |
+|  | CORS Middleware (Origin: http://localhost:3000, Methods: ALL)   |  |
+|  +--------------------------------+--------------------------------+  |
+|                                   |                                   |
+|  +--------------------------------v--------------------------------+  |
+|  |                      Router / Controllers                       |  |
+|  |  /api/auth  |  /api/requests  |  /api/ai  |  /api/auth/me       |  |
+|  +--------------------------------+--------------------------------+  |
+|                                   |                                   |
+|  +--------------------------------v--------------------------------+  |
+|  | JWT Middleware (Bearer Token Verification & req.user Injection) |  |
+|  +--------------------------------+--------------------------------+  |
++-----------------------------------|-----------------------------------+
+                                    | Mongoose ODM
+                                    v
++-----------------------------------------------------------------------+
+|                            DATABASE                                   |
+|                      MongoDB Atlas Cluster                            |
+|             (Collections: users, servicerequests)                     |
++-----------------------------------------------------------------------+
 ```
 
 ---
 
-# 📚 What I Learned
+# 🔧 Bug Fixes Implemented
 
-This project strengthened my knowledge of:
+| Category | Issue Description | Solution Implemented |
+|----------|-------------------|----------------------|
+| **Security** | Plaintext password vulnerability | Implemented salted `bcrypt` password hashing (rounds = 10) |
+| **Security** | Self-assigned Admin registration | Restricted public registration strictly to `USER` role |
+| **Security** | BOLA / IDOR vulnerability on requests | Enforced ownership check (`req.user.id === request.createdBy`) |
+| **Auth** | Session lost on page refresh (`F5`) | Added `/api/auth/me` endpoint & restored session via token |
+| **Auth** | localStorage token & header mismatch | Standardised Bearer token header in Axios request interceptor |
+| **CORS** | Browser "CORS request did not succeed" | Allowed dynamic origins (`3000`, `5173`), preflight `OPTIONS`, & methods |
+| **AI** | Endpoint path mismatch | Fixed AI route path to `/api/ai/analyze` |
+| **AI** | Response payload field mismatch | Aligned frontend state mapping with AI response keys |
+| **AI** | Priority enum invalid value | Mapped AI output to valid priority enum (`LOW`, `MEDIUM`, `HIGH`, `URGENT`) |
+| **Database** | Missing request status history | Added schema array tracking status changes, timestamps, and user ID |
+| **Frontend** | Navbar mobile menu toggle failure | Corrected React state toggle logic in Navbar component |
+| **Frontend** | UI loading state issues | Added spinner states to prevent double submissions during async calls |
+| **Error Handling** | Silent failures in server controllers | Wrapped all controllers in `try/catch` and logged with `console.error(err)` |
 
-- Full Stack Development
-- React & TypeScript
-- Express.js & Node.js
-- MongoDB Atlas & Mongoose
-- JWT Authentication & Authorization
-- REST APIs & Axios Interceptors
-- CORS Configuration & Preflight Requests
-- Secure Web Application Development (IDOR/BOLA mitigation, bcrypt)
-- Error Handling & Debugging
+---
+
+# 🔒 Security Improvements
+
+- **Stateless JWT Authentication**: Secure signing and verification.
+- **Salted Password Hashing**: `bcryptjs` hashing prevents rainbow table attacks.
+- **Role-Based Access Control (RBAC)**: Middleware enforcement for Admin routes (`isAdmin`).
+- **Object-Level Authorization (BOLA Prevention)**: Users can only view and modify their own tickets.
+- **Environment Isolation**: No hardcoded secrets or database URIs in source code.
+- **Protected Cross-Origin Resource Sharing**: Strict origin verification and header rules.
+
+---
+
+# 🧪 Testing & Verification Checklist
+
+- [x] Register new user account.
+- [x] Login with valid credentials and verify JWT return.
+- [x] Refresh browser (`F5`) and confirm session retention via `/api/auth/me`.
+- [x] Create a service request with AI suggestion auto-fill.
+- [x] View ticket details and status history timeline.
+- [x] Cancel user ticket and verify status update.
+- [x] Login as Admin and view all organizational tickets.
+- [x] Logout and verify token destruction in `localStorage`.
 
 ---
 
 # 🚀 Future Improvements
 
-- Email Notifications
-- File Upload Support
-- Real AI LLM Integration
-- Dashboard Analytics
-- Dark Mode
-- Docker Support
-- Unit & Integration Testing
-- CI/CD Pipeline
+- [ ] **Real AI Engine**: Integrate OpenAI GPT API or Google Gemini API.
+- [ ] **Email & Push Notifications**: Send email updates on ticket status changes.
+- [ ] **File Attachments**: Support screenshot uploads to AWS S3 / Cloudinary.
+- [ ] **Analytics Dashboard**: Graphical reports on ticket resolution times.
+- [ ] **Dockerization**: Containerize frontend, backend, and MongoDB with `docker-compose`.
+- [ ] **CI/CD Pipeline**: Automated GitHub Actions workflow for linting and testing.
 
 ---
 
 # 👨‍💻 Author
 
 **Vipin Zingade**
-
-GitHub: [https://github.com/vipin11111](https://github.com/vipin11111)
+- GitHub: [https://github.com/vipin11111](https://github.com/vipin11111)
 
 ---
 
-## ⭐ If you found this project helpful, consider giving it a star!
+## ⭐ Star the Repository
+If you found this project helpful, please consider giving it a star on GitHub!
