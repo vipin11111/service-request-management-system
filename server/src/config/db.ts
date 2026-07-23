@@ -12,6 +12,7 @@ export const connectDB = async (): Promise<void> => {
     console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
     console.error(`MongoDB connection error: ${(error as Error).message}`);
-    process.exit(1);
+    console.error('Server will continue running but database operations will fail.');
+    console.error('Please check your MONGODB_URI in the .env file.');
   }
 };
