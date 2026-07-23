@@ -18,6 +18,7 @@ const allowedOrigins = [
   'http://127.0.0.1:3000',
   'http://localhost:5173',
   process.env.CLIENT_ORIGIN,
+  'https://lambent-cendol-9e2316.netlify.app',
 ].filter(Boolean) as string[];
 
 const corsOptions: cors.CorsOptions = {
@@ -25,12 +26,12 @@ const corsOptions: cors.CorsOptions = {
     if (
       !origin ||
       allowedOrigins.includes(origin) ||
-      origin.endsWith('.vercel.app') ||
+      origin.endsWith('.netlify.app') ||
       process.env.NODE_ENV !== 'production'
     ) {
       callback(null, true);
     } else {
-      callback(null, true);
+      callback(new Error('Not allowed by CORS'));
     }
   },
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],

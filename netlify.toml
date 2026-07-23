@@ -1,0 +1,12 @@
+[build]
+  command = "npm --workspace client run build"
+  publish = "client/dist"
+
+[build.environment]
+  VITE_API_URL = "https://service-request-management-backend.onrender.com/api"
+  NODE_VERSION = "18"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
