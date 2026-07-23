@@ -49,6 +49,20 @@ app.use('/api/auth', authRoutes);
 app.use('/api/requests', requestRoutes);
 app.use('/api/ai', aiRoutes);
 
+app.get('/', (req: Request, res: Response) => {
+  res.status(200).json({
+    name: 'Service Request Management API',
+    status: 'online',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth',
+      requests: '/api/requests',
+      ai: '/api/ai',
+    },
+  });
+});
+
 app.get('/api/health', (req: Request, res: Response) => {
   res.status(200).json({ status: 'OK', message: 'Service is healthy' });
 });
