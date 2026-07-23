@@ -24,6 +24,7 @@ export const Register: React.FC = () => {
       setSuccess('Account registered successfully! You can now log in.');
     } catch (err: any) {
       setError(err.response?.data?.details || err.response?.data?.error || 'Registration failed');
+    } finally {
       setLoading(false);
     }
   };
