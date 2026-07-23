@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import api from '../api/api';
 import { useAuth } from '../context/AuthContext';
 import { ServiceRequest } from '../types';
-import { Eye, Plus, AlertCircle, RefreshCw, XCircle } from 'lucide-react';
+import { Eye, Plus, AlertCircle, RefreshCw, XCircle, Trash2 } from 'lucide-react';
 
 export const UserDashboard: React.FC = () => {
   const { user } = useAuth();
@@ -32,9 +32,19 @@ export const UserDashboard: React.FC = () => {
   const handleCancelRequest = async (id: string) => {
     try {
       await api.post(`/requests/${id}/cancel`);
-      alert('Request cancelled successfully.');
+      fetchRequests();
     } catch (err: any) {
       alert(err.response?.data?.error || 'Failed to cancel request');
+    }
+  };
+
+  const handleDeleteRequest = async (id: string) => {
+    if (!window.confirm('Are you sure you want to delete this service request?')) return;
+    try {
+      await api.delete(`/requests/${id}`);
+      fetchRequests();
+    } catch (err: any) {
+      alert(err.response?.data?.error || 'Failed to delete request');
     }
   };
 
@@ -110,8 +120,8 @@ export const UserDashboard: React.FC = () => {
                 <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Category</th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Priority</th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Created By (Leak)</th>
-                <th scope="col" className="px-6 py-3 className='text-right' text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Assigned Agent</th>
+                <th scope="col" className="px-6 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-slate-200">
@@ -130,8 +140,8 @@ export const UserDashboard: React.FC = () => {
                       {req.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
-                    {req.createdBy?.name || 'Unknown'} ({req.createdBy?.email || 'N/A'})
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                    {req.assignedTo?.name || 'Unassigned'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                     <button
@@ -151,6 +161,15 @@ export const UserDashboard: React.FC = () => {
                         <span>Cancel</span>
                       </button>
                     )}
+
+                    <button
+                      onClick={() => handleDeleteRequest(req._id)}
+                      className="inline-flex items-center space-x-1 text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-2.5 py-1.5 rounded-lg transition border border-red-200"
+                      title="Delete Request"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      <span>Delete</span>
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -161,3 +180,4 @@ export const UserDashboard: React.FC = () => {
     </div>
   );
 };
+

@@ -155,6 +155,39 @@ export const RequestDetail: React.FC = () => {
                 <span className="text-xs text-slate-500 block">{request.assignedTo?.email || ''}</span>
               </div>
             </div>
+
+            <div className="mt-6 pt-4 border-t border-slate-100 space-y-2">
+              {request.status !== 'CANCELLED' && request.status !== 'RESOLVED' && (
+                <button
+                  onClick={async () => {
+                    try {
+                      await api.post(`/requests/${request._id}/cancel`);
+                      const res = await api.get(`/requests/${request._id}`);
+                      setRequest(res.data);
+                    } catch (err: any) {
+                      alert(err.response?.data?.error || 'Failed to cancel request');
+                    }
+                  }}
+                  className="w-full text-center px-4 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-lg text-xs font-semibold transition border border-amber-200"
+                >
+                  Cancel Ticket
+                </button>
+              )}
+              <button
+                onClick={async () => {
+                  if (!window.confirm('Are you sure you want to delete this ticket?')) return;
+                  try {
+                    await api.delete(`/requests/${request._id}`);
+                    navigate('/dashboard');
+                  } catch (err: any) {
+                    alert(err.response?.data?.error || 'Failed to delete request');
+                  }
+                }}
+                className="w-full text-center px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 rounded-lg text-xs font-semibold transition border border-red-200"
+              >
+                Delete Ticket
+              </button>
+            </div>
           </div>
         </div>
       </div>

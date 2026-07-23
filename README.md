@@ -10,236 +10,233 @@ A production-ready full-stack **Service Request Management System** built with *
 
 ---
 
-## 🌐 Live Demo & Repository Links
+## Live Demo
 
-- **Frontend App (Vercel)**: [https://service-request-management-system.vercel.app](https://service-request-management-system.vercel.app)
-- **Backend API (Render)**: [https://service-request-management-backend.onrender.com/api](https://service-request-management-backend.onrender.com/api)
-- **GitHub Repository**: [https://github.com/vipin11111/service-request-management-system](https://github.com/vipin11111/service-request-management-system)
+- **Frontend (Vercel)**:  
+  [https://service-request-management-system.vercel.app](https://service-request-management-system.vercel.app)
 
----
+- **Backend API (Render)**:  
+  [https://service-request-management-backend.onrender.com/api](https://service-request-management-backend.onrender.com/api)
 
-## 📖 Project Overview
-
-The **Service Request Management System (SRMS)** streamlines organizational IT support. Employees can submit service tickets for software issues, hardware repairs, network connectivity, or access management. An integrated AI assistant analyzes ticket text to auto-suggest summaries, categories, priorities, and justifications.
-
-Administrators receive a dedicated control panel to oversee all tickets, assign support staff, transition ticket statuses (`OPEN` -> `IN_PROGRESS` -> `RESOLVED` / `CANCELLED`), and review audit histories.
+- **GitHub Repository**:  
+  [https://github.com/vipin11111/service-request-management-system](https://github.com/vipin11111/service-request-management-system)
 
 ---
 
-## ✨ Features
+## Features
 
 ### 🔐 Authentication & Security
 - **User Registration & Login**: Secure authentication with salted `bcryptjs` password hashing.
 - **Stateless JWT Authorization**: Bearer token authentication with configurable expiration.
-- **Session Persistence**: Automatic session restoration via `GET /api/auth/me` on page refresh (`F5`).
-- **Protected & Admin Routes**: Role-based access control (`USER` vs `ADMIN`) on client and server.
+- **Session Persistence**: Automatic session restoration via `GET /api/auth/me` on page refresh.
+- **Role-based Access Control**: Strict access boundaries between `USER` and `ADMIN` roles.
 
 ### 🎫 Service Request Management
 - **Ticket Submission**: Multi-field form with optional AI recommendations auto-fill.
-- **Interactive Dashboards**: Metrics tracking total, open, in-progress, and resolved requests.
-- **Ticket Details & Audit Log**: Real-time status change tracking with timestamps and user references.
-- **Ticket Cancellation**: Users can safely cancel pending requests.
+- **Interactive Dashboards**: Live metrics tracking total, open, in-progress, resolved, and cancelled tickets.
+- **Ticket Details & Audit Log**: Real-time status history timeline with change notes and timestamps.
+- **Ticket Cancellation & Deletion**: Users and Admins can cancel or delete tickets with immediate UI updates.
+- **Full MongoDB CRUD Operations**: Complete Create, Read, Update (Status & Assignee), and Delete support.
 
 ### 🛡️ Admin Portal
 - **Global Requests Oversight**: Unified view of all tickets submitted across the organization.
-- **Agent Assignment**: Assign tickets to support representatives.
-- **Lifecycle Management**: Transition ticket status through to resolution.
+- **Agent Assignment**: Assign support tickets to representatives.
+- **Lifecycle Management**: Transition ticket statuses through resolution.
 
 ### 🤖 AI Request Analysis
-- **Automated Text Processing**: Scans title and description for severity keywords.
-- **Category & Priority Inference**: Predicts appropriate category (`SOFTWARE`, `HARDWARE`, `NETWORK`, `ACCESS`, `OTHER`) and priority (`LOW`, `MEDIUM`, `HIGH`, `URGENT`).
-- **Smart Summary**: Generates concise issue summaries.
+- **Automated Text Processing**: Analyzes title and description content.
+- **Category & Priority Inference**: Predicts appropriate category (`SOFTWARE`, `HARDWARE`, `NETWORK`, `ACCESS`, `OTHER`) and priority (`LOW`, `MEDIUM`, `HIGH`, `URGENT`) with reasoning.
 
 ---
 
-## 🛠 Technologies Used
+## Technologies Used
 
-### Frontend
-- **React 18** & **TypeScript**
-- **Vite** (Fast dev server and build tool)
-- **Axios** (Configured with request interceptors & credentials)
-- **React Router v6** (Client-side routing)
-- **Tailwind CSS** (Modern styling)
-- **Lucide React** (Icons)
-
-### Backend
-- **Node.js** & **Express.js**
-- **TypeScript**
-- **MongoDB Atlas** & **Mongoose ORM**
-- **JSON Web Tokens (`jsonwebtoken`)**
-- **bcryptjs** (Password hashing)
-- **cors** (Cross-Origin Resource Sharing middleware)
+- **Frontend**: React 18, Vite, TypeScript, Tailwind CSS, React Router DOM v6, Axios, Lucide React Icons
+- **Backend**: Node.js, Express.js, TypeScript, Mongoose ODM, JSON Web Token (`jsonwebtoken`), `bcryptjs`, CORS, `dotenv`
+- **Database**: MongoDB Atlas (Cloud Cluster)
+- **Deployment**: Vercel (Frontend SPA), Render (Backend Node.js Web Service)
 
 ---
 
-## 📂 Folder Structure
+## Installation & Local Setup
 
-```
-service-request-management-system
-│
-├── client                         # Frontend Application (React + Vite)
-│   ├── src
-│   │   ├── api/                   # Axios client instance with Bearer interceptors
-│   │   ├── components/            # Reusable UI components (Navbar, etc.)
-│   │   ├── context/               # AuthContext for session management
-│   │   ├── pages/                 # Dashboard, Login, Register, Request Details
-│   │   ├── types/                 # Shared TypeScript interface definitions
-│   │   ├── index.css              # Tailwind CSS imports & global styles
-│   │   └── main.tsx               # React application entrypoint & Router
-│   ├── package.json
-│   ├── tsconfig.json
-│   ├── vercel.json                # Vercel SPA rewrite configuration
-│   └── vite.config.ts             # Vite proxy configuration
-│
-├── server                         # Backend Application (Express + TypeScript)
-│   ├── src
-│   │   ├── config/                # Database connection handler
-│   │   ├── controllers/           # Auth, Request, and AI business logic
-│   │   ├── middleware/            # JWT verification & Admin authorization
-│   │   ├── models/                # Mongoose schemas (User, ServiceRequest)
-│   │   ├── routes/                # Express API endpoints
-│   │   ├── scripts/               # Database seeding script
-│   │   └── index.ts               # Express server entrypoint
-│   ├── package.json
-│   └── tsconfig.json
-│
-├── render.yaml                    # Render Cloud backend configuration
-├── .gitignore                     # Git exclusion rules
-└── README.md                      # System documentation
-```
-
----
-
-## 🔌 API Endpoints Reference
-
-| Method | Endpoint | Description | Auth Required | Access Level |
-|--------|----------|-------------|---------------|--------------|
-| `POST` | `/api/auth/register` | Register a new user account | No | Public |
-| `POST` | `/api/auth/login` | Authenticate user & receive JWT token | No | Public |
-| `GET` | `/api/auth/me` | Retrieve authenticated user profile | Yes | Authenticated |
-| `GET` | `/api/requests` | Fetch requests (user's own or all for Admin) | Yes | Authenticated |
-| `POST` | `/api/requests` | Create a new service request | Yes | Authenticated |
-| `GET` | `/api/requests/:id` | Fetch request details by ID | Yes | Owner / Admin |
-| `PATCH` | `/api/requests/:id/status` | Update request status | Yes | Admin |
-| `PATCH` | `/api/requests/:id/assign` | Assign request to support agent | Yes | Admin |
-| `POST` | `/api/requests/:id/cancel` | Cancel a service request | Yes | Owner / Admin |
-| `POST` | `/api/ai/analyze` | AI analysis for category & priority | Yes | Authenticated |
-| `GET` | `/api/health` | Health check endpoint | No | Public |
-
----
-
-## 💻 Local Setup & Installation
+### Prerequisites
+- Node.js (v18.x or higher)
+- npm (v9.x or higher)
+- MongoDB Atlas cluster connection string (or local MongoDB daemon)
 
 ### 1. Clone Repository
-
 ```bash
 git clone https://github.com/vipin11111/service-request-management-system.git
 cd service-request-management-system
 ```
 
-### 2. Backend Setup
-
+### 2. Install Dependencies
 ```bash
-cd server
+# Install workspace dependencies for root, client, and server
 npm install
 ```
 
-Create `.env` in `server/`:
-
+### 3. Environment Setup
+Create `.env` file inside the `server/` directory:
 ```env
 PORT=5000
-MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.zodxsio.mongodb.net/service-request-db?retryWrites=true&w=majority
-JWT_SECRET=your_jwt_secret_key_here
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/service-request-db?retryWrites=true&w=majority
+JWT_SECRET=your_super_secret_jwt_key
 JWT_EXPIRES_IN=1d
 CLIENT_ORIGIN=http://localhost:3000
 AI_PROVIDER=mock
 AI_SERVICE_TOKEN=mock_secret
-DB_SEED_MODE=active
 ```
 
-Seed Database (Optional):
-```bash
-npm run seed
-```
-
-Start Backend:
-```bash
-npm run dev
-```
-
-### 3. Frontend Setup
-
-```bash
-cd ../client
-npm install
-```
-
-Create `.env` in `client/`:
-
+Create `.env` file inside the `client/` directory:
 ```env
 VITE_API_URL=http://localhost:5000/api
 ```
 
-Start Frontend:
+### 4. Seed Database (Optional)
+Populate initial demo users (`user@example.com` / `admin@example.com` with password `Password123!`):
+```bash
+npm run seed
+```
+
+### 5. Run Local Development Server
 ```bash
 npm run dev
 ```
-
-Open: **`http://localhost:3000`**
-
----
-
-## 🚀 Deployment Guide
-
-### Deploying Backend to Render
-1. Connect GitHub repository to [Render Dashboard](https://dashboard.render.com/).
-2. Create **Web Service** with **Root Directory**: `server`.
-3. Set **Build Command**: `npm install && npm run build`
-4. Set **Start Command**: `npm start`
-5. Configure Environment Variables (`PORT`, `MONGODB_URI`, `JWT_SECRET`, `CLIENT_ORIGIN`).
-
-### Deploying Frontend to Vercel
-1. Import repository to [Vercel Dashboard](https://vercel.com/).
-2. Set **Root Directory**: `client` and Framework Preset: `Vite`.
-3. Set Environment Variable `VITE_API_URL` = `https://service-request-management-backend.onrender.com/api`.
-4. Deploy project. `client/vercel.json` will automatically handle SPA client-side routes.
+- Client runs on: `http://localhost:3000` (or `http://localhost:5173`)
+- Server runs on: `http://localhost:5000`
 
 ---
 
-## 🔧 Bug Fixes Completed
+## Environment Variables
 
-| Area | Issue Description | Solution Implemented |
-|------|-------------------|----------------------|
-| **Database** | Connection failures & timeout errors | Optimized Mongoose connection options and environment URI loading |
-| **Security** | Plaintext password vulnerability | Implemented salted `bcryptjs` password hashing (rounds = 10) |
-| **Security** | Registration role escalation vulnerability | Enforced public registration strictly to `USER` role |
-| **Security** | BOLA / IDOR vulnerability on tickets | Verified ownership (`req.user.id === request.createdBy`) before returning request data |
-| **Authentication** | Session lost after browser refresh (`F5`) | Added `GET /api/auth/me` endpoint and session restoration in `AuthContext` |
-| **Authentication** | Token mismatch in HTTP headers | Configured Axios request interceptor to automatically attach `Bearer ${token}` |
-| **CORS** | Browser CORS rejection on POST requests | Expanded CORS options to support dynamic origins, methods (`GET, POST, PUT, PATCH, DELETE, OPTIONS`), and headers |
-| **AI Integration** | Route and field mismatch | Fixed endpoint path to `/api/ai/analyze` and aligned response property mapping |
-| **AI Integration** | Invalid priority enum value | Mapped AI response values to valid schema enums (`LOW`, `MEDIUM`, `HIGH`, `URGENT`) |
-| **Error Handling** | Server crash on uncaught controller errors | Wrapped all controller functions in `try/catch` with explicit `console.error(err)` logging |
-| **Routing** | Page refresh 404 error on Vercel | Created `client/vercel.json` with SPA rewrite rules to `index.html` |
+| Variable | Scope | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `PORT` | Server | HTTP Port for Express app | `5000` |
+| `MONGODB_URI` | Server | MongoDB Atlas connection string | Required |
+| `JWT_SECRET` | Server | Secret string used to sign JWT tokens | Required |
+| `JWT_EXPIRES_IN` | Server | Expiration window for JWT tokens | `1d` |
+| `CLIENT_ORIGIN` | Server | Allowed CORS origin for frontend | `http://localhost:3000` |
+| `AI_PROVIDER` | Server | AI Engine Provider mode (`mock` or `openai`) | `mock` |
+| `AI_SERVICE_TOKEN` | Server | Token for AI provider | `mock_secret` |
+| `VITE_API_URL` | Client | Backend API endpoint URL | `/api` |
 
 ---
 
-## 🚀 Future Improvements
+## Deployment
 
-- [ ] Integrate OpenAI GPT / Google Gemini API for real-time generative AI ticket suggestions.
-- [ ] Implement file attachment uploads (AWS S3 / Cloudinary) for screenshots.
-- [ ] Add real-time notifications via WebSockets / Socket.io.
-- [ ] Containerize application with Docker & Docker Compose.
-- [ ] Setup GitHub Actions CI/CD workflow for continuous testing.
+### Deploy Backend to Render
+1. Create a new **Web Service** on [Render](https://render.com).
+2. Connect your GitHub repository: `vipin11111/service-request-management-system`.
+3. Set **Root Directory**: `server`
+4. Set **Build Command**: `npm install && npm run build`
+5. Set **Start Command**: `node dist/index.js`
+6. Add Environment Variables (`MONGODB_URI`, `JWT_SECRET`, `NODE_ENV=production`, `CLIENT_ORIGIN=https://YOUR-VERCEL-APP.vercel.app`).
+
+### Deploy Frontend to Vercel
+1. Import repository on [Vercel](https://vercel.com).
+2. Set **Root Directory**: `client` (or use root with included `vercel.json`).
+3. Set **Framework Preset**: `Vite`
+4. Set **Build Command**: `npm run build`
+5. Set **Output Directory**: `dist`
+6. Add Environment Variable: `VITE_API_URL=https://YOUR-RENDER-APP.onrender.com/api`
 
 ---
 
-## 👨‍💻 Author
+## API Endpoints
 
-**Vipin Zingade**
-- GitHub: [https://github.com/vipin11111](https://github.com/vipin11111)
+### 🔐 Authentication Routes (`/api/auth`)
+| Method | Endpoint | Access | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/auth/register` | Public | Register a new user |
+| `POST` | `/api/auth/login` | Public | Authenticate user & return JWT token |
+| `GET` | `/api/auth/me` | Protected | Fetch current logged-in user profile |
+
+### 🎫 Service Request Routes (`/api/requests`)
+| Method | Endpoint | Access | Description |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/requests` | Protected | Get service requests (Admin gets all, User gets own) |
+| `POST` | `/api/requests` | Protected | Create a new service request |
+| `GET` | `/api/requests/:id` | Protected | Fetch detailed service request by ID |
+| `PATCH` | `/api/requests/:id/status` | Protected | Update ticket status & log history |
+| `PUT` | `/api/requests/:id/assign` | Protected | Assign ticket to an agent/admin |
+| `POST` | `/api/requests/:id/cancel` | Protected | Cancel a service request |
+| `DELETE` | `/api/requests/:id` | Protected | Delete a service request |
+
+### 🤖 AI Routes (`/api/ai`)
+| Method | Endpoint | Access | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/ai/analyze` | Public / Auth | Analyze request title & description for suggestions |
+| `GET` | `/api/health` | Public | Server health check endpoint |
 
 ---
 
-## ⭐ Star the Repository
-If you found this project helpful, please consider giving it a star on GitHub!
+## Bug Fixes Completed
+
+- **MongoDB Atlas Integration**: Verified connection handling and graceful error reporting in `db.ts`. Fixed Mongoose `ObjectId` conversion issues in `statusHistory` logging.
+- **Authentication & JWT Session Persistence**: Fixed session restoration on page reload (`/auth/me`). Fixed authorization header extraction in `requireAuth` middleware.
+- **Missing Delete Request Endpoint**: Implemented `deleteRequest` controller in `requestController.ts` and registered `DELETE /api/requests/:id` in `requestRoutes.ts`. Added delete UI actions in both Admin and User Dashboards.
+- **HTTP Method Mismatch in Admin Dashboard**: Fixed status update call from `api.put` to `api.patch('/requests/:id/status')` to align frontend with backend route definition.
+- **Dynamic Admin Dashboard Metrics**: Replaced static hardcoded numbers (`total: 35, open: 18...`) with real-time dynamic state calculations based on fetched MongoDB requests.
+- **User Dashboard UI Cleanup & Auto-Refresh**: Removed leftover debug column header `"Created By (Leak)"`. Added automatic list re-fetching after ticket cancellation or deletion.
+- **Route Protection**: Secured single ticket detail endpoint (`GET /api/requests/:id`) with `requireAuth` middleware to prevent unauthorized access.
+- **CORS Configuration**: Configured Express CORS options to dynamically support `process.env.CLIENT_ORIGIN` and any Vercel domain (`*.vercel.app`).
+- **SPA Refresh Routing**: Added `vercel.json` rewrite rules to redirect client-side route reloads to `index.html`.
+
+---
+
+## Folder Structure
+
+```
+service-request-management-system/
+├── client/                      # React + Vite Frontend
+│   ├── public/                  # Static assets
+│   ├── src/
+│   │   ├── api/                 # Axios instance with auth interceptors
+│   │   ├── components/          # Reusable Navbar and UI components
+│   │   ├── context/             # AuthContext provider and hook
+│   │   ├── pages/               # Dashboards, Auth pages, Request forms
+│   │   ├── types/               # TypeScript interfaces
+│   │   ├── main.tsx             # Entrypoint & Router configuration
+│   │   └── index.css            # Tailwind CSS imports
+│   ├── package.json             # Frontend dependencies
+│   ├── tailwind.config.js       # Tailwind configuration
+│   ├── tsconfig.json            # Client TypeScript config
+│   ├── vercel.json              # Vercel SPA configuration
+│   └── vite.config.ts           # Vite build & proxy setup
+│
+├── server/                      # Express + Node Backend
+│   ├── src/
+│   │   ├── config/              # MongoDB connection config (`db.ts`)
+│   │   ├── controllers/         # Auth, Request, and AI controllers
+│   │   ├── middleware/          # JWT Auth & Admin authorization middlewares
+│   │   ├── models/              # Mongoose schemas (`User.ts`, `ServiceRequest.ts`)
+│   │   ├── routes/              # Auth, Request, and AI API endpoints
+│   │   ├── scripts/             # Database seed script (`seed.ts`)
+│   │   └── index.ts             # Express app entrypoint & CORS setup
+│   ├── package.json             # Backend dependencies
+│   └── tsconfig.json            # Server TypeScript config
+│
+├── .gitignore                   # Excludes node_modules, dist, .env, logs
+├── package.json                 # Root npm workspace config
+├── render.yaml                  # Render deployment blueprint specification
+├── vercel.json                  # Root Vercel deployment configuration
+└── README.md                    # System documentation
+```
+
+---
+
+## Future Improvements
+
+- **Real-Time Updates**: Integrate WebSockets (`socket.io`) for live ticket status notifications.
+- **File Attachments**: Support uploading screenshots and diagnostic logs (AWS S3 or Cloudinary).
+- **Advanced AI Capabilities**: Connect OpenAI GPT-4 API for automated ticket resolution suggestions and automated responses.
+- **Email Notifications**: Send email confirmations to users upon ticket status updates via Nodemailer/SendGrid.
+
+---
+
+## Author
+
+**Vipin Zingade**  
+GitHub: [https://github.com/vipin11111](https://github.com/vipin11111)

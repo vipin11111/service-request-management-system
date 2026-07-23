@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../api/api';
 import { useAuth } from '../context/AuthContext';
 import { ServiceRequest } from '../types';
-import { AlertCircle, RefreshCw, ShieldAlert } from 'lucide-react';
+import { AlertCircle, RefreshCw, ShieldAlert, Trash2, Eye } from 'lucide-react';
 
 export const AdminDashboard: React.FC = () => {
   const { user } = useAuth();
@@ -13,13 +13,13 @@ export const AdminDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [stats, setStats] = useState({
-    total: 35,
-    open: 18,
-    inProgress: 10,
-    resolved: 5,
-    cancelled: 2
-  });
+  const stats = {
+    total: requests.length,
+    open: requests.filter((r) => r.status === 'OPEN').length,
+    inProgress: requests.filter((r) => r.status === 'IN_PROGRESS' || r.status === 'IN_REVIEW').length,
+    resolved: requests.filter((r) => r.status === 'RESOLVED').length,
+    cancelled: requests.filter((r) => r.status === 'CANCELLED').length,
+  };
 
   const fetchRequests = async () => {
     setLoading(true);
@@ -40,8 +40,7 @@ export const AdminDashboard: React.FC = () => {
 
   const handleStatusChange = async (id: string, newStatus: string) => {
     try {
-      await api.put(`/requests/${id}/status`, { status: newStatus });
-      alert('Status updated successfully!');
+      await api.patch(`/requests/${id}/status`, { status: newStatus });
       fetchRequests();
     } catch (err: any) {
       alert(`Error updating status: ${err.response?.data?.error || err.message}`);
@@ -51,10 +50,19 @@ export const AdminDashboard: React.FC = () => {
   const handleAssign = async (id: string, assignedUserId: string) => {
     try {
       const res = await api.put(`/requests/${id}/assign`, { assignedTo: assignedUserId });
-      alert(res.data.message || 'Assigned successfully.');
       fetchRequests();
     } catch (err: any) {
       alert('Assignment failed.');
+    }
+  };
+
+  const handleDeleteRequest = async (id: string) => {
+    if (!window.confirm('Are you sure you want to delete this service request?')) return;
+    try {
+      await api.delete(`/requests/${id}`);
+      fetchRequests();
+    } catch (err: any) {
+      alert(`Error deleting request: ${err.response?.data?.error || err.message}`);
     }
   };
 
@@ -149,22 +157,25 @@ export const AdminDashboard: React.FC = () => {
                       </select>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                      <select
-                        value={req.assignedTo?._id || ''}
-                        onChange={(e) => handleAssign(req._id, e.target.value)}
-                        className="bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg focus:ring-brand-500 focus:border-brand-500 block p-1"
-                      >
-                        <option value="">Unassigned</option>
-                        <option value="60d5ec49867c2e36f0b48c1a">Admin User (admin@example.com)</option>
-                        <option value="60d5ec49867c2e36f0b48c1b">Backup Admin</option>
-                      </select>
+                      <span className="text-xs text-slate-600">
+                        {req.assignedTo?.name || 'Unassigned'}
+                      </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                       <button
                         onClick={() => navigate(`/request/${req._id}`)}
-                        className="text-brand-600 hover:text-brand-900 px-3 py-1 bg-brand-50 hover:bg-brand-100 rounded-lg transition"
+                        className="inline-flex items-center space-x-1 text-brand-600 hover:text-brand-900 px-3 py-1 bg-brand-50 hover:bg-brand-100 rounded-lg transition"
                       >
-                        Details
+                        <Eye className="h-3.5 w-3.5" />
+                        <span>Details</span>
+                      </button>
+                      <button
+                        onClick={() => handleDeleteRequest(req._id)}
+                        className="inline-flex items-center space-x-1 text-red-600 hover:text-red-800 px-2.5 py-1 bg-red-50 hover:bg-red-100 rounded-lg transition border border-red-200"
+                        title="Delete Request"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                        <span>Delete</span>
                       </button>
                     </td>
                   </tr>
@@ -177,3 +188,4 @@ export const AdminDashboard: React.FC = () => {
     </div>
   );
 };
+

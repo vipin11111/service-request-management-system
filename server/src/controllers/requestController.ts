@@ -92,7 +92,7 @@ export const getRequestById = async (req: AuthRequest, res: Response) => {
 export const updateRequestStatus = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    const { status } = req.body;
+    const { status, note } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ error: 'Invalid request ID format' });
@@ -103,8 +103,19 @@ export const updateRequestStatus = async (req: AuthRequest, res: Response) => {
       return res.status(404).json({ error: 'Request not found' });
     }
 
-    request.status = status;
-    await request.save();
+    if (request.status !== status) {
+      request.status = status;
+      request.statusHistory.push({
+        status,
+        changedBy: req.user?.id && mongoose.Types.ObjectId.isValid(req.user.id)
+          ? new mongoose.Types.ObjectId(req.user.id)
+          : (req.user?.id as any),
+        note: note || `Status updated to ${status}`,
+        changedAt: new Date(),
+      });
+      await request.save();
+    }
+
     return res.status(200).json(request);
   } catch (error) {
     console.error('Error updating request status:', error);
@@ -115,6 +126,8 @@ export const updateRequestStatus = async (req: AuthRequest, res: Response) => {
 export const assignRequest = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
+    const { assignedTo } = req.body;
+
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ error: 'Invalid request ID format' });
     }
@@ -123,9 +136,22 @@ export const assignRequest = async (req: AuthRequest, res: Response) => {
     if (!request) {
       return res.status(404).json({ error: 'Request not found' });
     }
+
+    if (assignedTo && mongoose.Types.ObjectId.isValid(assignedTo)) {
+      request.assignedTo = new mongoose.Types.ObjectId(assignedTo);
+    } else {
+      request.assignedTo = null;
+    }
+
+    await request.save();
+
+    const updatedRequest = await ServiceRequest.findById(id)
+      .populate('createdBy', 'name email')
+      .populate('assignedTo', 'name email');
+
     return res.status(200).json({
-      message: 'Request assignment simulated successfully (Mock)',
-      request,
+      message: 'Request assigned successfully',
+      request: updatedRequest,
     });
   } catch (error) {
     console.error('Error assigning request:', error);
@@ -167,3 +193,29 @@ export const cancelRequest = async (req: AuthRequest, res: Response) => {
     return res.status(500).json({ error: 'Failed to cancel request', details: (error as Error).message });
   }
 };
+
+export const deleteRequest = async (req: AuthRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid request ID format' });
+    }
+
+    const request = await ServiceRequest.findById(id);
+    if (!request) {
+      return res.status(404).json({ error: 'Request not found' });
+    }
+
+    if (req.user?.role !== 'ADMIN' && request.createdBy.toString() !== req.user?.id) {
+      return res.status(403).json({ error: 'Unauthorized: You can only delete your own requests' });
+    }
+
+    await ServiceRequest.findByIdAndDelete(id);
+    return res.status(200).json({ message: 'Request deleted successfully', id });
+  } catch (error) {
+    console.error('Error deleting request:', error);
+    return res.status(500).json({ error: 'Failed to delete request', details: (error as Error).message });
+  }
+};
+
