@@ -12,8 +12,8 @@ A production-ready full-stack **Service Request Management System** built with *
 
 ## Live Demo
 
-- **Frontend (Netlify)**:  
-  [https://lambent-cendol-9e2316.netlify.app](https://lambent-cendol-9e2316.netlify.app)
+- **Frontend (Vercel)**:  
+  [https://your-app-name.vercel.app](https://your-app-name.vercel.app)
 
 - **Backend API (Render)**:  
   [https://service-request-management-backend.onrender.com/api](https://service-request-management-backend.onrender.com/api)
@@ -54,7 +54,7 @@ A production-ready full-stack **Service Request Management System** built with *
 - **Frontend**: React 18, Vite, TypeScript, Tailwind CSS, React Router DOM v6, Axios, Lucide React Icons
 - **Backend**: Node.js, Express.js, TypeScript, Mongoose ODM, JSON Web Token (`jsonwebtoken`), `bcryptjs`, CORS, `dotenv`
 - **Database**: MongoDB Atlas (Cloud Cluster)
-- **Deployment**: Netlify (Frontend SPA), Render (Backend Node.js Web Service)
+- **Deployment**: Vercel (Frontend SPA), Render (Backend Node.js Web Service)
 
 ---
 
@@ -134,9 +134,9 @@ npm run dev
 5. Set **Start Command**: `node dist/index.js`
 6. Add Environment Variables (`MONGODB_URI`, `JWT_SECRET`, `NODE_ENV=production`, `CLIENT_ORIGIN=https://YOUR-VERCEL-APP.vercel.app`).
 
-### Deploy Frontend to Netlify
-1. Import repository on [Netlify](https://netlify.com).
-2. The included `netlify.toml` will automatically configure the build settings.
+### Deploy Frontend to Vercel
+1. Import repository on [Vercel](https://vercel.com).
+2. The included `vercel.json` will automatically configure the build settings.
 3. Add Environment Variable: `VITE_API_URL=https://YOUR-RENDER-APP.onrender.com/api`
 
 ---
@@ -178,8 +178,8 @@ npm run dev
 - **Dynamic Admin Dashboard Metrics**: Replaced static hardcoded numbers (`total: 35, open: 18...`) with real-time dynamic state calculations based on fetched MongoDB requests.
 - **User Dashboard UI Cleanup & Auto-Refresh**: Removed leftover debug column header `"Created By (Leak)"`. Added automatic list re-fetching after ticket cancellation or deletion.
 - **Route Protection**: Secured single ticket detail endpoint (`GET /api/requests/:id`) with `requireAuth` middleware to prevent unauthorized access.
-- **CORS Configuration**: Configured Express CORS options to dynamically support `process.env.CLIENT_ORIGIN` and any Netlify domain (`*.netlify.app`).
-- **SPA Refresh Routing**: Added `netlify.toml` rewrite rules to redirect client-side route reloads to `index.html`.
+- **CORS Configuration**: Configured Express CORS options to dynamically support `process.env.CLIENT_ORIGIN` and any Vercel domain (`*.vercel.app`).
+- **SPA Refresh Routing**: Added `vercel.json` rewrite rules to redirect client-side route reloads to `index.html`.
 
 ---
 
@@ -217,7 +217,7 @@ service-request-management-system/
 ├── .gitignore                   # Excludes node_modules, dist, .env, logs
 ├── package.json                 # Root npm workspace config
 ├── render.yaml                  # Render deployment blueprint specification
-├── netlify.toml                 # Root Netlify deployment configuration
+├── vercel.json                  # Vercel deployment configuration
 └── README.md                    # System documentation
 ```
 

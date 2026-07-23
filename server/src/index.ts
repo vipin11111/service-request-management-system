@@ -18,7 +18,6 @@ const allowedOrigins = [
   'http://127.0.0.1:3000',
   'http://localhost:5173',
   process.env.CLIENT_ORIGIN,
-  'https://lambent-cendol-9e2316.netlify.app',
 ].filter(Boolean) as string[];
 
 const corsOptions: cors.CorsOptions = {
@@ -26,7 +25,7 @@ const corsOptions: cors.CorsOptions = {
     if (
       !origin ||
       allowedOrigins.includes(origin) ||
-      origin.endsWith('.netlify.app') ||
+      origin.endsWith('.vercel.app') ||
       process.env.NODE_ENV !== 'production'
     ) {
       callback(null, true);
