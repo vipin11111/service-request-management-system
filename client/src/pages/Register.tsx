@@ -23,7 +23,14 @@ export const Register: React.FC = () => {
       const response = await api.post('/auth/register', { name, email, password });
       setSuccess('Account registered successfully! You can now log in.');
     } catch (err: any) {
-      setError(err.response?.data?.details || err.response?.data?.error || 'Registration failed');
+      const serverMsg = err.response?.data?.details || err.response?.data?.error;
+      if (serverMsg) {
+        setError(serverMsg);
+      } else if (err.message) {
+        setError(`Unable to connect to backend server: ${err.message}. Ensure backend is running and VITE_API_URL is set.`);
+      } else {
+        setError('Registration failed');
+      }
     } finally {
       setLoading(false);
     }

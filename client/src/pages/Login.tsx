@@ -30,7 +30,14 @@ export const Login: React.FC = () => {
         navigate('/dashboard');
       }
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Something went wrong during login.');
+      const serverMsg = err.response?.data?.error || err.response?.data?.details;
+      if (serverMsg) {
+        setError(serverMsg);
+      } else if (err.message) {
+        setError(`Unable to connect to backend server: ${err.message}. Ensure backend is running and VITE_API_URL is set.`);
+      } else {
+        setError('Something went wrong during login.');
+      }
     } finally {
       setLoading(false);
     }
